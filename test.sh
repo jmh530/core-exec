@@ -49,7 +49,7 @@ bsource=$(echo -e "$source" | base64 -w0)
 ## dub file with unittest
 source="/++dub.sdl: name\"foo\" \n dependency\"mir\" version=\"*\"+/ unittest { import mir.combinatorics, std.stdio; writeln([0, 1].permutations); } void main() {}"
 bsource=$(echo -e "$source" | base64 -w0)
-[ "$(docker run --rm "$dockerId" "$bsource")" == "[[0, 1], [1, 0]]" ]
+DOCKER_FLAGS="-unittest" [ docker run -e DOCKER_FLAGS --rm $dockerId $bsource | grep -q "_Dmain" == "[[0, 1], [1, 0]]" ]
 
 # Test -c
 source='void main() { static assert(0); }'
